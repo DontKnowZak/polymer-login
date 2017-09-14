@@ -24,15 +24,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="card">
       <div class="circle">1</div>
       <h1>Login</h1>
-      <form is="iron-form" id="login_form" method="get">
-        <paper-input is="iron-input" id="email" label="Email" type="email" required auto-validate></paper-input>
-        <paper-input label="Password" id="password" type="password" value="{{password}}" required auto-validate></paper-input>
-
-        <match-passwords-validator id="match-passwords-validator" check-equal-to="{{password}}"></match-passwords-validator>
-
-        <paper-input label="Confirm Password" id="repeat_password" type="password" validator="match-passwords-validator" required auto-validate></paper-input>
-        <paper-button raised>Submit</paper-button>
-      </form>
+      <iron-form id="login-form">
+        <form is="iron-form" method="get">
+          <paper-input is="iron-input" id="email" label="Email" type="email" required></paper-input>
+          <match-passwords-validator id="match-passwords-validator" check-equal-to="{{password}}" required></match-passwords-validator>
+          <paper-input label="Password" id="password" type="password" value="{{password}}" required></paper-input>
+          <paper-input label="Confirm Password" id="repeat_password" type="password" validator="match-passwords-validator" error-message="passwords must match"></paper-input>
+          <paper-button raised on-click="submitForm" id="submit">Submit</paper-button>
+        </form>
+      </iron-form>
     </div>
   </template>
 
@@ -42,23 +42,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     (function() {
-      'use strict';
+      Polymer({
+        is: 'my-view1',
+        properties: {
+          item: {
+            type: Object
+          }
+        },
+        submitForm: function(){
+          if (this.$['login-form'].validate()) {
+            console.log('valid');
+          } else {
+            console.log('invalid');
+          }
+        }
+      });
+
       Polymer({
         is: 'match-passwords-validator',
         behaviors: [
            Polymer.IronValidatorBehavior
         ],
-        properties: {
-          checkEqualTo: {
-            type: String
-          }
-        },
         validate: function(value){
-          return value == this.checkEqualTo;
+          return !value || value == this.checkEqualTo;
         }
-      })
-    })()
-
-    window.customElements.define(MyView1.is, MyView1);
+      });
+    })();
   </script>
+
 </dom-module>
