@@ -24,13 +24,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="card">
       <div class="circle">1</div>
       <h1>Login</h1>
-      <iron-form>
-        <form method="get" action="/form/handler">
-          <input type="text" name="name" value="Batman">
-          <input type="checkbox" name="donuts" checked> I like donuts<br>
-          <paper-checkbox name="cheese" value="yes" checked></paper-checkbox>
-        </form>
-      </iron-form>
+      <form is="iron-form" id="login_form" method="get">
+        <paper-input is="iron-input" id="email" label="Email" type="email" required auto-validate></paper-input>
+        <paper-input label="Password" id="password" type="password" value="{{password}}" required auto-validate></paper-input>
+
+        <match-passwords-validator id="match-passwords-validator" check-equal-to="{{password}}"></match-passwords-validator>
+
+        <paper-input label="Confirm Password" id="repeat_password" type="password" validator="match-passwords-validator" required auto-validate></paper-input>
+        <paper-button raised>Submit</paper-button>
+      </form>
     </div>
   </template>
 
@@ -38,6 +40,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     class MyView1 extends Polymer.Element {
       static get is() { return 'my-view1'; }
     }
+
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'match-passwords-validator',
+        behaviors: [
+           Polymer.IronValidatorBehavior
+        ],
+        properties: {
+          checkEqualTo: {
+            type: String
+          }
+        },
+        validate: function(value){
+          return value == this.checkEqualTo;
+        }
+      })
+    })()
 
     window.customElements.define(MyView1.is, MyView1);
   </script>
